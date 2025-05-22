@@ -16,7 +16,7 @@ let dtheta = 0;
 let mx = 0;
 let my = 0;
 
-let throwScale = 50;
+let throwScale = 100;
 
 let base;
 let hypotenuse;
@@ -117,15 +117,33 @@ function i() {
         p(pa[q].x, pa[q].y, pa[q].z, pa[q].t);
     }
 
-    
-    ctx.fillStyle = "green";
-    ctx.fillRect(530, 250, 25, 100);
+    // const gradient = ctx.createLinearGradient(530, 250, 540, 250 + 3 * (100 - throwScale));
+    // gradient.addColorStop(0.3, "green");
+    // gradient.addColorStop(0.5, "yellowgreen");
+    // gradient.addColorStop(0.7, "yellow");
+    // gradient.addColorStop(0.9, "orange");
+    // gradient.addColorStop(1, "red ");
+
+    if (throwScale > 90) {
+        ctx.fillStyle = "green";
+    } else if (throwScale > 80) {
+        ctx.fillStyle = "yellowgreen";
+    } else if (throwScale > 60) {
+        ctx.fillStyle = "yellow";
+    } else if (throwScale > 40) {
+        ctx.fillStyle = "orange";
+    } else if (throwScale > 20) {
+        ctx.fillStyle = "orangered";
+    } else if (throwScale > 10) {
+        ctx.fillStyle = "red";
+    }
+    ctx.fillRect(530, 250, 10, 3 * (100 - throwScale));
 }
                           
 window.addEventListener("keydown", (e) => {
     if (e.key == " ") {
         if (throwScale > 20) {
-            throwScale -= 20;
+            throwScale -= 5;
         }
     } 
 })
@@ -138,7 +156,7 @@ window.addEventListener("keyup", (e) => {
         dtheta = 15 * (Math.PI / 180); 
 
         i();
-        throwScale = 50;
+        throwScale = 100;
     }
 });
 
