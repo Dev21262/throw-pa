@@ -22,6 +22,9 @@ let base;
 let hypotenuse;
 let perpendicular;
 
+let paperIndex = 0;
+
+
 let rc = () => Math.round(Math.random() * (co.length - 1))
 
 
@@ -37,6 +40,45 @@ let pa = [
 const mod = (para) => Math.abs(para);
 const sqrt = (para) => Math.sqrt(para);
 const sqr =  (para) => para ** 2;
+
+
+class Button {
+    constructor(x, y, w, h, txt, size, color, hoverColor) {
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
+        this.txt = txt;
+        this.size = size;
+        this.color = color;
+        this.hoverColor = hoverColor;
+    }
+
+    draw() {
+        let { x, y, w, h, txt, size, color, hoverColor } = this;
+        
+        let fillColor = color;
+        
+        if (mx > x && my > y - h
+            && mx < x + w && my < y + h) {
+            fillColor = hoverColor;
+        } else {
+            console.log(mx);
+            fillColor = color;
+        }
+
+        // ctx.fillStyle = "red";
+        // ctx.fillRect(x, y - h, w, h);
+        ctx.textAlign = "left";
+        ctx.fillStyle = fillColor;
+        ctx.font = `${size}rem 'Inter', sans-serif`;
+        ctx.fillText(txt, x, y);
+    }   
+}
+
+const PLAYBTN = new Button(272, 295, 100, 30, "P L A Y", 2, "#444444", "#000000")
+const HOWBTN = new Button(272, 345, 90, 30, "H O W", 2,  "#444444", "#000000")
+const SCORES = new Button(240, 395, 155, 30, "S C O R E S", 2, "#444444", "#000000")
 
 function quadrant() {
     if (mx > 300 && my < 300) {
@@ -56,6 +98,7 @@ function rotatePaper(index) {
     hypotenuse = sqrt(sqr(mx - pa[index].x) +  sqr(my - pa[index].y)); 
     perpendicular = (pa[index].y - my);
     base = (mx - pa[index].x);
+    
 
     let angle = Math.atan(Math.abs(perpendicular / base)); 
 
@@ -110,42 +153,68 @@ function p(x,y,z,t) {
     ctx.fillRect(15, 19, 22, 10);
     ctx.restore();
 }
+    
+let ccc = rc();
+let ccc2 = rc();
+let ccc3 = rc();
+let ccc4 = rc();
+
 
 function menu() {
     ctx.clearRect(0,0,600,600);    
-    const ccc = rc();
-    ctx.fillStyle = co[ccc];
-    ctx.font = "5rem 'Major Mono Display', monospace";
-    ctx.fillText("THROW", 445, 155);
-    ctx.fillStyle = co[rc()];
-    ctx.fillText("PA", 515, 225);
-
-    ctx.fillStyle = "#444444";
-    ctx.font = "2rem 'Inter', sans-serif";
-    ctx.fillText("P L A Y", 300, 295);
-    ctx.fillText("H O W", 298, 345);
-    ctx.fillText("S C O R E S", 300, 395);
-
-    ctx.font = "1.25rem 'Inter', sans-serif";
-    ctx.fillText("MADE BY ", 70, 580);
-    ctx.fillStyle = co[ccc];
-    ctx.font = "1.5rem 'Major Mono Display', monospace";
-    ctx.fillText("21262", 155, 580);
 
     for (let xa = 0; xa < 600; xa += 35) {
         for (let ya = 0; ya < 600; ya += 35) {
-            ctx.fillStyle = co[rc()];
-            // ctx.beginPath();
-            // ctx.arc(xa, ya, 1.5, 0, 2 * Math.PI);
-            // ctx.fill();
+            ctx.fillStyle = co[ccc2];
             ctx.fillRect(xa, ya, 2, 3);
         }
     }
 
-    p(500, 400, ccc, rc());
-    p(500, 420, rc(), rc());
-    p(500, 440, rc(), rc());
-    p(500, 450, rc(), rc());
+    ctx.fillStyle = co[ccc];
+    ctx.font = "5rem 'Major Mono Display', monospace";
+    ctx.fillText("THROW", 445, 155);
+    ctx.fillStyle = co[ccc2];
+    ctx.fillText("PA", 515, 225);
+
+    PLAYBTN.draw();
+    HOWBTN.draw();
+    SCORES.draw();
+
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#444444";
+    ctx.font = "1.25rem 'Inter', sans-serif";
+    ctx.fillText("MADE BY ", 70, 580);
+    ctx.fillStyle = co[ccc2];
+    ctx.font = "1.25rem 'Inter', sans-serif";
+    ctx.strokeStyle = co[ccc];
+    ctx.strokeText("2 1 2 6 2", 150, 579);
+
+    // ctx.lineWidth = 1;
+
+    p(500, 400, ccc, ccc2);
+    p(500, 420, ccc2, ccc);
+    p(500, 440, ccc3, ccc2);
+    p(500, 450, ccc4, ccc3);
+
+    ctx.strokeStyle = co[ccc2];
+    ctx.beginPath();
+    ctx.moveTo(0, 50);
+    ctx.lineTo(100, 0);
+    ctx.stroke();
+
+    ctx.strokeStyle = co[ccc3];
+    ctx.beginPath();
+    ctx.moveTo(0, 60);
+    ctx.lineTo(110, 0);
+    ctx.stroke();
+
+    ctx.strokeStyle = co[ccc4];
+    ctx.beginPath();
+    ctx.moveTo(0, 70);
+    ctx.lineTo(120, 0);
+    ctx.stroke();
+
+    requestAnimationFrame(menu);
 }
 
 function i() {
@@ -195,6 +264,7 @@ window.addEventListener("keyup", (e) => {
 
         i();
         throwScale = 100;
+
     }
 });
 
@@ -206,17 +276,12 @@ function g() {
         dy = 0;
         dtheta = 0;
         pa.shift();
-    } 
-
-    if (dx == 0 && dy == 0) {
-        pa[0].x += dx;
-        pa[0].y += dy;
-        pa[0].t += dtheta;
-    } else {
-        pa[1].x += dx;
-        pa[1].y += dy;
-        pa[1].t += dtheta;
     }
+
+    pa[paperIndex].x += dx;
+    pa[paperIndex].y += dy;
+    pa[paperIndex].t += dtheta;
+
 
 
     if (pa.length < 5){ 
