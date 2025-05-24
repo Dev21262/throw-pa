@@ -1,7 +1,7 @@
 let canvas = document.querySelector("#c");
 let ctx = canvas.getContext("2d");
 
-let co = ["#A50600", "#92A300", "#00A073", "#56009E", "#9B4800"];
+let co = ["#B97376", "#73A4B7", "#72B577", "#B2B270", "#746EAF"];
 canvas.width = canvas.height = 600;
 
 ctx.textAlign = "center";
@@ -113,28 +113,39 @@ function p(x,y,z,t) {
 
 function menu() {
     ctx.clearRect(0,0,600,600);    
-    const ccc = co[rc()];
-    ctx.fillStyle = "#bdbdbd";
-    ctx.fillRect(150, 80, 280, 70);
-    ctx.fillStyle = ccc;
-    ctx.fillRect(130, 100, 280, 70);
-    ctx.font = "3.25rem 'Sen', sans-serif";
-    ctx.fillStyle = "white";
-    ctx.fillText("Throw PA", 265, 155);
+    const ccc = rc();
+    ctx.fillStyle = co[ccc];
+    ctx.font = "5rem 'Major Mono Display', monospace";
+    ctx.fillText("THROW", 445, 155);
+    ctx.fillStyle = co[rc()];
+    ctx.fillText("PA", 515, 225);
 
+    ctx.fillStyle = "#444444";
+    ctx.font = "2rem 'Inter', sans-serif";
+    ctx.fillText("P L A Y", 300, 295);
+    ctx.fillText("H O W", 298, 345);
+    ctx.fillText("S C O R E S", 300, 395);
+
+    ctx.font = "1.25rem 'Inter', sans-serif";
+    ctx.fillText("MADE BY ", 70, 580);
+    ctx.fillStyle = co[ccc];
+    ctx.font = "1.5rem 'Major Mono Display', monospace";
+    ctx.fillText("21262", 155, 580);
 
     for (let xa = 0; xa < 600; xa += 35) {
         for (let ya = 0; ya < 600; ya += 35) {
-            ctx.fillStyle = ccc;
-            ctx.beginPath();
-            ctx.arc(xa, ya, 1.5, 0, 2 * Math.PI);
-            ctx.fill();
+            ctx.fillStyle = co[rc()];
+            // ctx.beginPath();
+            // ctx.arc(xa, ya, 1.5, 0, 2 * Math.PI);
+            // ctx.fill();
+            ctx.fillRect(xa, ya, 2, 3);
         }
     }
 
-    ctx.fillRect(170, 220, 150, 60);
-    ctx.fillRect(170, 290, 190, 60);
-    ctx.fillRect(170, 360, 190, 60);
+    p(500, 400, ccc, rc());
+    p(500, 420, rc(), rc());
+    p(500, 440, rc(), rc());
+    p(500, 450, rc(), rc());
 }
 
 function i() {
@@ -152,19 +163,19 @@ function i() {
     // gradient.addColorStop(1, "red ");
 
     if (throwScale > 90) {
-        ctx.fillStyle = "green";
+        ctx.fillStyle = "#80CE77";
     } else if (throwScale > 80) {
-        ctx.fillStyle = "yellowgreen";
+        ctx.fillStyle = "#BACC76";
     } else if (throwScale > 60) {
-        ctx.fillStyle = "yellow";
+        ctx.fillStyle = "#CCCC76";
     } else if (throwScale > 40) {
-        ctx.fillStyle = "orange";
+        ctx.fillStyle = "#CC9E76";
     } else if (throwScale > 20) {
-        ctx.fillStyle = "orangered";
+        ctx.fillStyle = "#CC8D76";
     } else if (throwScale > 10) {
-        ctx.fillStyle = "red";
+        ctx.fillStyle = "#CC7676";
     }
-    ctx.fillRect(530, 250, 10, 3 * (100 - throwScale));
+    ctx.fillRect(560, 20, 10, 3 * (100 - throwScale));
 }
                           
 window.addEventListener("keydown", (e) => {
@@ -178,7 +189,7 @@ window.addEventListener("keydown", (e) => {
 
 window.addEventListener("keyup", (e) => {
     if (e.key == " ") {
-        dx = base/ throwScale;
+        dx = base / throwScale;
         dy = -perpendicular/ throwScale; 
         dtheta = 15 * (Math.PI / 180); 
 
@@ -197,9 +208,15 @@ function g() {
         pa.shift();
     } 
 
-    pa[0].x += dx;
-    pa[0].y += dy;
-    pa[0].t += dtheta;
+    if (dx == 0 && dy == 0) {
+        pa[0].x += dx;
+        pa[0].y += dy;
+        pa[0].t += dtheta;
+    } else {
+        pa[1].x += dx;
+        pa[1].y += dy;
+        pa[1].t += dtheta;
+    }
 
 
     if (pa.length < 5){ 
@@ -220,5 +237,5 @@ function g() {
     window.requestAnimationFrame(g);
 }
 
-// g();
-menu();
+g();
+// menu();
