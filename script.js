@@ -92,7 +92,7 @@ function p(x,y,z,t) {
     ctx.fillStyle = "#EAEDEF";
     ctx.strokeStyle = co[z];
     
-    ctx.font = "1.5rem 'DM Serif Display', serif";
+    ctx.font = "1.5rem 'Newsreader', serif";
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(t);
@@ -110,6 +110,33 @@ function p(x,y,z,t) {
     ctx.fillRect(15, 19, 22, 10);
     ctx.restore();
 }
+
+function menu() {
+    ctx.clearRect(0,0,600,600);    
+    const ccc = co[rc()];
+    ctx.fillStyle = "#bdbdbd";
+    ctx.fillRect(150, 80, 280, 70);
+    ctx.fillStyle = ccc;
+    ctx.fillRect(130, 100, 280, 70);
+    ctx.font = "3.25rem 'Sen', sans-serif";
+    ctx.fillStyle = "white";
+    ctx.fillText("Throw PA", 265, 155);
+
+
+    for (let xa = 0; xa < 600; xa += 35) {
+        for (let ya = 0; ya < 600; ya += 35) {
+            ctx.fillStyle = ccc;
+            ctx.beginPath();
+            ctx.arc(xa, ya, 1.5, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+    }
+
+    ctx.fillRect(170, 220, 150, 60);
+    ctx.fillRect(170, 290, 190, 60);
+    ctx.fillRect(170, 360, 190, 60);
+}
+
 function i() {
     ctx.clearRect(0,0,600,600);
 
@@ -193,4 +220,5 @@ function g() {
     window.requestAnimationFrame(g);
 }
 
-g();
+// g();
+menu();
