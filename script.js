@@ -24,6 +24,9 @@ let perpendicular;
 
 let paperIndex = 0;
 
+let menuAnim;
+let playAnim;
+let scoresAnim;
 
 let rc = () => Math.round(Math.random() * (co.length - 1))
 
@@ -41,30 +44,51 @@ const mod = (para) => Math.abs(para);
 const sqrt = (para) => Math.sqrt(para);
 const sqr =  (para) => para ** 2;
 
+const ifHovering = {
+    PlAY: false,
+    HOW: false,
+    SCORES: false
+};
+
+document.onclick = function () {
+    for (let props in ifHovering) {
+        if (ifHovering[props]) {
+            cancelAnimationFrame(menuAnim);
+            cancelAnimationFrame(scoresAnim);
+            cancelAnimationFrame(playAnim);
+
+            if (props === "P L A Y") {
+                playAnim = requestAnimationFrame(g);
+            }
+        }
+    }
+}
 
 class Button {
-    constructor(x, y, w, h, txt, size, color, hoverColor) {
+    constructor(x, y, w, h, txt, name, size, color, hoverColor) {
         this.x = x;
         this.y = y;
         this.w = w;
         this.h = h;
         this.txt = txt;
+        this.name = name;
         this.size = size;
         this.color = color;
         this.hoverColor = hoverColor;
     }
 
     draw() {
-        let { x, y, w, h, txt, size, color, hoverColor } = this;
+        let { x, y, w, h, txt, name, size, color, hoverColor } = this;
         
         let fillColor = color;
         
         if (mx > x && my > y - h
             && mx < x + w && my < y + h) {
             fillColor = hoverColor;
+            ifHovering[txt] = true;
         } else {
-            console.log(mx);
             fillColor = color;
+            ifHovering[txt] = false;
         }
 
         // ctx.fillStyle = "red";
@@ -76,9 +100,9 @@ class Button {
     }   
 }
 
-const PLAYBTN = new Button(272, 295, 100, 30, "P L A Y", 2, "#444444", "#000000")
-const HOWBTN = new Button(272, 345, 90, 30, "H O W", 2,  "#444444", "#000000")
-const SCORES = new Button(240, 395, 155, 30, "S C O R E S", 2, "#444444", "#000000")
+const PLAYBTN = new Button(272, 295, 100, 30, "P L A Y", "PLAY", 2, "#444444", "#000000")
+const HOWBTN = new Button(272, 345, 90, 30, "H O W", 2, "HOW", "#444444", "#000000")
+const SCORES = new Button(240, 395, 155, 30, "S C O R E S", 2, "SCORES", "#444444", "#000000")
 
 function quadrant() {
     if (mx > 300 && my < 300) {
@@ -159,7 +183,6 @@ let ccc2 = rc();
 let ccc3 = rc();
 let ccc4 = rc();
 
-
 function menu() {
     ctx.clearRect(0,0,600,600);    
 
@@ -213,8 +236,8 @@ function menu() {
     ctx.moveTo(0, 70);
     ctx.lineTo(120, 0);
     ctx.stroke();
-
-    requestAnimationFrame(menu);
+    
+    menuAnim = requestAnimationFrame(menu);
 }
 
 function i() {
@@ -299,8 +322,8 @@ function g() {
 
     i();
 
-    window.requestAnimationFrame(g);
+    playAnim = window.requestAnimationFrame(g);
 }
 
-g();
+g();                                          
 // menu();
