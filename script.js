@@ -11,6 +11,8 @@ let py = 300;
 
 let dy = 0;
 let dx = 0;
+let rdx = 0;
+let rdy = 0;
 let dtheta = 0; 
 
 let mx = 0;
@@ -58,7 +60,7 @@ document.onclick = function () {
             cancelAnimationFrame(playAnim);
 
             if (props === "P L A Y") {
-                playAnim = requestAnimationFrame(g);
+                playAnim = requestAnimationFrame(game);
             }
         }
     }
@@ -105,13 +107,13 @@ const HOWBTN = new Button(272, 345, 90, 30, "H O W", 2, "HOW", "#444444", "#0000
 const SCORES = new Button(240, 395, 155, 30, "S C O R E S", 2, "SCORES", "#444444", "#000000")
 
 function quadrant() {
-    if (mx > 300 && my < 300) {
+    if (mx > pa[0].x && my < pa[0].y) {
         return "First";
-    } else if (mx > 300 && my > 300) {
+    } else if (mx > pa[0].x && my > pa[0].y) {
         return "Fourth";
-    } else if (mx < 300 && my < 300) {
+    } else if (mx <  pa[0].x && my < pa[0].y) {
         return "Second";
-    } else if (mx < 300 && my > 300) {
+    } else if (mx <  pa[0].x && my > pa[0].y) {
         return "Third";
     }
 }
@@ -151,8 +153,6 @@ window.onmousemove = (e) => {
         rotatePaper(1);
     } 
 
-    // console.log(Math.round(pa[0].t * (180 / Math.PI)));
-    // console.log(perprendicular);
 };
 
 function p(x,y,z,t) {
@@ -276,6 +276,18 @@ window.addEventListener("keydown", (e) => {
             throwScale -= 5;
         }
     } 
+
+    if (e.key == "d") {
+        rdx = 10
+    } else if (e.key == "a") {
+        rdx = -10;
+    }
+    
+    if (e.key == "w") {
+        rdy = -10
+    } else if (e.key == "s") {
+        rdy = 10;
+    }
 })
  
 
@@ -287,11 +299,18 @@ window.addEventListener("keyup", (e) => {
 
         i();
         throwScale = 100;
+    }
 
+    if (e.key == "d" || e.key == "a") {
+        rdx = 0;
+    }
+
+    if (e.key == "w" || e.key == "s") {
+        rdy = 0;
     }
 });
 
-function g() {    
+function game() {    
     if (pa[0].x > 650 || pa[0].x < -50 ||
         pa[0].y > 650 || pa[0].y < -50 
     ) {
@@ -301,11 +320,19 @@ function g() {
         pa.shift();
     }
 
-    pa[paperIndex].x += dx;
-    pa[paperIndex].y += dy;
-    pa[paperIndex].t += dtheta;
+    pa.forEach((elem, index) => {
+        if (dx == 0 && dy == 0) {
+            elem.x += rdx;
+            elem.y += rdy;
+        }
+    });
 
+    px += rdx;
+    py += rdy;
 
+    pa[0].x += dx;
+    pa[0].y += dy;
+    pa[0].t += dtheta;
 
     if (pa.length < 5){ 
         for (let x = px; x < px + 1; x++) {
@@ -317,13 +344,19 @@ function g() {
                     t: Math.random() * 5 
                 }
             );
+            console.log(px);
+            console.log(py);
         }
     }
 
     i();
+    
+    ctx.fillStyle = "red";
+    ctx.fillRect(50, 50, 20, 20);
 
-    playAnim = window.requestAnimationFrame(g);
+
+    playAnim = window.requestAnimationFrame(game);
 }
 
-g();                                          
+game();                                          
 // menu();
