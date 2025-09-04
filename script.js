@@ -275,18 +275,18 @@ window.addEventListener("keydown", (e) => {
         if (throwScale > 20) {
             throwScale -= 5;
         }
-    } 
-
-    if (e.key == "d") {
-        rdx = 10
-    } else if (e.key == "a") {
-        rdx = -10;
-    }
-    
-    if (e.key == "w") {
-        rdy = -10
-    } else if (e.key == "s") {
-        rdy = 10;
+    } else {
+        if (e.key == "d") {
+            rdx = 10
+        } else if (e.key == "a") {
+            rdx = -10;
+        }
+        
+        if (e.key == "w") {
+            rdy = -10
+        } else if (e.key == "s") {
+            rdy = 10;
+        }
     }
 })
  
@@ -299,14 +299,14 @@ window.addEventListener("keyup", (e) => {
 
         i();
         throwScale = 100;
-    }
-
-    if (e.key == "d" || e.key == "a") {
-        rdx = 0;
-    }
-
-    if (e.key == "w" || e.key == "s") {
-        rdy = 0;
+    } else {   
+        if (e.key == "d" || e.key == "a") {
+            rdx = 0;
+        }
+        
+        if (e.key == "w" || e.key == "s") {
+            rdy = 0;
+        }
     }
 });
 
@@ -358,5 +358,5 @@ function game() {
     playAnim = window.requestAnimationFrame(game);
 }
 
-game();                                          
-// menu();
+// game();                                          
+menu();
