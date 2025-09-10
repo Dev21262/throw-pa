@@ -6,25 +6,27 @@ canvas.width = canvas.height = 600;
 
 ctx.textAlign = "center";
 
-let px = 300;
-let py = 300;
+let px = 300; // Paper's Center of Mass's X Coordina
+// e
+let py = 300; // Paper's Center of Mass's Y Coordinate
 
-let dy = 0;
-let dx = 0;
-let rdx = 0;
-let rdy = 0;
-let dtheta = 0; 
+let dy = 0; // Y Velocity of first paper 
+let dx = 0; // X Velocity of first paper
+let rdx = 0; // Y Velocity of all other papers
+let rdy = 0; // X Velocity of all other papers
+let dtheta = 0; // Angular Velocity at throw of paper
 
-let mx = 0;
-let my = 0;
 
-let throwScale = 100;
+let mx = 0; //MouseX
+let my = 0; //MouseY
 
-let base;
-let hypotenuse;
-let perpendicular;
+let throwScale = 100; // A scalar
 
-let paperIndex = 0;
+let base; //Resolved Base of Vector
+let hypotenuse; //Actual Vector
+let perpendicular; //Resolved Height of Vector
+
+let paperIndex = 0; //Current Paper index
 
 let menuAnim;
 let playAnim;
@@ -37,7 +39,7 @@ let pa = [
     {
         x: px, 
         y: py,
-        z: rc(),
+        z: rc(), //Determines color
         t: 0
     }
 ];
@@ -127,6 +129,8 @@ function rotatePaper(index) {
     
 
     let angle = Math.atan(Math.abs(perpendicular / base)); 
+    //Mod of Angle from the nearest x-axis. Either +x or -x 
+    // alert(Math.round(angle * 180 / Math.PI));
 
     if (q === "First") {
         pa[index].t = (Math.PI / 2) - (angle);
@@ -290,7 +294,7 @@ window.addEventListener("keydown", (e) => {
             }
         }
     }
-    
+
     if (dx === 0 && dy === 0) {
         rotatePaper(0);
     }
