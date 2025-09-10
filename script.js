@@ -146,6 +146,29 @@ function rotatePaper(index) {
     }
 }
 
+let rand = rc();
+
+function collision() {
+    //Dimensions of Paper:  90 pixels wide, 80 pixels high
+    const {x, y, w, h} = {
+        x: pa[0].x - 55,
+        y:  pa[0].y - 50,
+        w: 105,
+        h: 100,
+    }
+    ctx.fillStyle = co[rand];
+
+
+    ctx.strokeRect(pa[0].x - 55,  pa[0].y - 50, 105, 100);
+    
+    if (250 > x && 250 < x + w &&
+        50 > y && 50 < y + h 
+    ) {
+        ctx.fillStyle = "red";
+    }
+    ctx.fillRect(250, 50, 20, 20);
+}
+
 
 window.onmousemove = (e) => {
     mx = e.clientX;
@@ -360,11 +383,8 @@ function game() {
     }
 
     i();
-    
-    ctx.fillStyle = "red";
-    ctx.fillRect(50, 50, 20, 20);
+    collision();
 
-       
     playAnim = window.requestAnimationFrame(game);
 }
 
