@@ -276,20 +276,25 @@ window.addEventListener("keydown", (e) => {
             throwScale -= 5;
         }
     } else {
-        if (e.key == "d") {
-            rdx = 10
-        } else if (e.key == "a") {
-            rdx = -10;
-        }
+        if (dx == 0 && dy == 0) {
+            if (e.key == "d") {
+                rdx = 15
+            } else if (e.key == "a") {
+                rdx = -15;
+            }
         
-        if (e.key == "w") {
-            rdy = -10
-        } else if (e.key == "s") {
-            rdy = 10;
+            if (e.key == "w") {
+                rdy = -15
+            } else if (e.key == "s") {
+                rdy = 15;
+            }
         }
     }
+    
+    if (dx === 0 && dy === 0) {
+        rotatePaper(0);
+    }
 })
- 
 
 window.addEventListener("keyup", (e) => {
     if (e.key == " ") {
@@ -308,6 +313,7 @@ window.addEventListener("keyup", (e) => {
             rdy = 0;
         }
     }
+    rotatePaper(0);
 });
 
 function game() {    
@@ -354,9 +360,9 @@ function game() {
     ctx.fillStyle = "red";
     ctx.fillRect(50, 50, 20, 20);
 
-
+       
     playAnim = window.requestAnimationFrame(game);
 }
 
-// game();                                          
-menu();
+game();                                                
+// menu();
