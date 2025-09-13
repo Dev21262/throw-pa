@@ -151,22 +151,31 @@ let rand = rc();
 function collision() {
     //Dimensions of Paper:  90 pixels wide, 80 pixels high
     const {x, y, w, h} = {
-        x: pa[0].x - 55,
-        y:  pa[0].y - 50,
-        w: 105,
-        h: 100,
+        x: pa[0].x - 52,
+        y:  pa[0].y - 52,
+        w: 90,
+        h: 90,
     }
-    ctx.fillStyle = co[rand];
-
-
-    ctx.strokeRect(x,  y, w, h);
+    
+    
+    // ctx.strokeRect(x, y, w, h);
     
     if (250 > x && 250 < x + w &&
         50 > y && 50 < y + h 
     ) {
         ctx.fillStyle = "red";
     }
-    ctx.fillRect(250, 50, 20, 20);
+    
+    ctx.fillStyle = '#ecf7faff';
+    ctx.fillRect(230, 60, 50, 80);
+    ctx.fillStyle = '#72B577';
+    ctx.fillRect(230, 60, 50, 70);
+
+    ctx.fillStyle = "#ecf7faff";
+    ctx.beginPath();
+    ctx.arc(245, 90, 5, 0, Math.PI * 2);
+    ctx.arc(265, 90, 5, 0, Math.PI * 2);
+    ctx.fill();
 }
 
 
@@ -186,22 +195,27 @@ function p(x,y,z,t) {
     ctx.fillStyle = "#EAEDEF";
     ctx.strokeStyle = co[z];
     
-    ctx.font = "1.5rem 'Newsreader', serif";
+    ctx.font = "1.3rem 'Newsreader', serif";
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(t);
-    ctx.fillRect(-45, -40, 90, 80);
-    ctx.strokeRect(-45, -40, 90, 80);
-    ctx.strokeRect(-35, -5, 45, 35);
+
+    ctx.fillRect(-33, -35, 75, 70);
+    ctx.strokeRect(-33, -35, 75, 70);
+    ctx.strokeRect(-25, 0, 35, 25);
     
     ctx.fillStyle = co[z];
-    ctx.fillText("NEWS", -8, -15);
-    ctx.fillRect(-35, -12, 65, 2);
-    ctx.fillRect(-35, -5, 15, 20);
+    ctx.fillText("NEWS", 0, -10);
+    ctx.fillRect(-25, -8, 55, 2);
+    ctx.fillRect( -25, -0, 15, 15);
     
-    ctx.fillRect(15, -5, 12, 10);
-    ctx.fillRect(15, 7, 17, 10);
-    ctx.fillRect(15, 19, 22, 10);
+    ctx.fillRect(15, 0, 10, 6);
+    ctx.fillRect(15, 8, 14, 6);
+    ctx.fillRect(15, 17, 17, 6);
+    
+    // ctx.fillStyle="red"; //Center of rotation
+    // ctx.fillRect(0, 0, 10, 10); //Center of rotation
+    
     ctx.restore();
 }
     
@@ -294,6 +308,7 @@ function i() {
     } else if (throwScale > 10) {
         ctx.fillStyle = "#CC7676";
     }
+
     ctx.fillRect(560, 20, 10, 3 * (100 - throwScale));
 }
                           
@@ -346,7 +361,9 @@ window.addEventListener("keyup", (e) => {
             rdy = 0;
         }
     }
-    rotatePaper(0);
+    if (dx[0] === 0 && dy[0] === 0) {
+        rotatePaper(0);
+    }
 });
 
 function game() {
@@ -405,5 +422,5 @@ function game() {
     playAnim = window.requestAnimationFrame(game);
 }
 
-// game();                                                
-menu();
+game();                                                
+// menu();
