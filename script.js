@@ -10,11 +10,11 @@ let px = 300; // Paper's Center of Mass's X Coordina
 // e
 let py = 300; // Paper's Center of Mass's Y Coordinate
 
-let dy = 0; // Y Velocity of first paper 
-let dx = 0; // X Velocity of first paper
+let dy = [0, 0, 0, 0, 0]; // Y Velocity of first paper 
+let dx = [0, 0, 0, 0, 0]; // X Velocity of first paper
 let rdx = 0; // Y Velocity of all other papers
 let rdy = 0; // X Velocity of all other papers
-let dtheta = 0; // Angular Velocity at throw of paper
+let dtheta = 15 * (Math.PI / 180);  // Angular Velocity at throw of paper
 
 
 let mx = 0; //MouseX
@@ -108,20 +108,20 @@ const PLAYBTN = new Button(272, 295, 100, 30, "P L A Y", "PLAY", 2, "#444444", "
 const HOWBTN = new Button(272, 345, 90, 30, "H O W", 2, "HOW", "#444444", "#000000")
 const SCORES = new Button(240, 395, 155, 30, "S C O R E S", 2, "SCORES", "#444444", "#000000")
 
-function quadrant() {
-    if (mx > pa[0].x && my < pa[0].y) {
+function quadrant(indice) {
+    if (mx > pa[indice].x && my < pa[indice].y) {
         return "First";
-    } else if (mx > pa[0].x && my > pa[0].y) {
+    } else if (mx > pa[indice].x && my > pa[indice].y) {
         return "Fourth";
-    } else if (mx <  pa[0].x && my < pa[0].y) {
+    } else if (mx < pa[indice].x && my < pa[indice].y) {
         return "Second";
-    } else if (mx <  pa[0].x && my > pa[0].y) {
+    } else if (mx < pa[indice].x && my > pa[indice].y) {
         return "Third";
     }
 }
 
 function rotatePaper(index) {
-    let q = quadrant();
+    let q = quadrant(index);
 
     hypotenuse = sqrt(sqr(mx - pa[index].x) +  sqr(my - pa[index].y)); 
     perpendicular = (pa[index].y - my);
@@ -159,7 +159,7 @@ function collision() {
     ctx.fillStyle = co[rand];
 
 
-    ctx.strokeRect(pa[0].x - 55,  pa[0].y - 50, 105, 100);
+    ctx.strokeRect(x,  y, w, h);
     
     if (250 > x && 250 < x + w &&
         50 > y && 50 < y + h 
@@ -174,12 +174,12 @@ window.onmousemove = (e) => {
     mx = e.clientX;
     my = e.clientY;
 
-    if (dx === 0 && dy === 0) { 
-        rotatePaper(0);
-    } else {
-        rotatePaper(1);
-    } 
-
+    for (let a = 0; a < pa.length; a ++) {
+        if (dx[a] === 0 && dy[a] === 0) { 
+            rotatePaper(a);
+            break;
+        }   
+    }
 };
 
 function p(x,y,z,t) {
@@ -303,31 +303,37 @@ window.addEventListener("keydown", (e) => {
             throwScale -= 5;
         }
     } else {
-        if (dx == 0 && dy == 0) {
-            if (e.key == "d") {
-                rdx = 15
-            } else if (e.key == "a") {
-                rdx = -15;
-            }
-        
-            if (e.key == "w") {
-                rdy = -15
-            } else if (e.key == "s") {
-                rdy = 15;
-            }
+        if (e.key == "d") {
+            rdx = 15;
+        } else if (e.key == "a") {
+            rdx = -15;
+        }
+    
+        if (e.key == "w") {
+            rdy = -15
+        } else if (e.key == "s") {
+            rdy = 15;
         }
     }
 
-    if (dx === 0 && dy === 0) {
-        rotatePaper(0);
+    for (let a = 0; a < pa.length; a ++) {
+        if (dx[a] === 0 && dy[a] === 0) { 
+            rotatePaper(a);
+            break;
+        }   
     }
 })
 
 window.addEventListener("keyup", (e) => {
     if (e.key == " ") {
-        dx = base / throwScale;
-        dy = -perpendicular/ throwScale; 
-        dtheta = 15 * (Math.PI / 180); 
+        for (let a = 0; a < pa.length; a ++) {
+            if (dx[a] === 0 && dy[a] === 0) { 
+                dx[a] = base / throwScale;
+                dy[a] = -perpendicular/ throwScale; 
+
+                break;
+            }   
+        }
 
         i();
         throwScale = 100;
@@ -343,18 +349,24 @@ window.addEventListener("keyup", (e) => {
     rotatePaper(0);
 });
 
-function game() {    
-    if (pa[0].x > 650 || pa[0].x < -50 ||
-        pa[0].y > 650 || pa[0].y < -50 
-    ) {
-        dx = 0;
-        dy = 0;
-        dtheta = 0;
-        pa.shift();
+function game() {
+    for (let a = 0; a < pa.length; a ++) {
+        if (pa[a].x > 650 || pa[a].x < -50 ||
+            pa[a].y > 650 || pa[a].y < -50 
+        ) {
+            pa.splice(a, 1);
+            for (let b = a; b < pa.length; b++) {
+                if (dx[b] !== 0 && dy[b] !== 0 ) {
+                    dx[b] = dx[b + 1];
+                    dy[b] = dy[b + 1];
+                } 
+            }
+        }
     }
 
+
     pa.forEach((elem, index) => {
-        if (dx == 0 && dy == 0) {
+        if (dx[index] == 0 && dy[index] == 0) {
             elem.x += rdx;
             elem.y += rdy;
         }
@@ -363,9 +375,13 @@ function game() {
     px += rdx;
     py += rdy;
 
-    pa[0].x += dx;
-    pa[0].y += dy;
-    pa[0].t += dtheta;
+    for (let a = 0; a < pa.length; a++) {
+        pa[a].x += dx[a];
+        pa[a].y += dy[a];
+        if (dx[a] !== 0 && dy[a] !== 0) {
+            pa[a].t += dtheta;
+        }
+    }
 
     if (pa.length < 5){ 
         for (let x = px; x < px + 1; x++) {
@@ -382,11 +398,12 @@ function game() {
         }
     }
 
+
     i();
     collision();
 
     playAnim = window.requestAnimationFrame(game);
 }
 
-game();                                                
-// menu();
+// game();                                                
+menu();
