@@ -1,13 +1,13 @@
-let canvas = document.querySelector("#c");
-let ctx = canvas.getContext("2d");
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext("2d");
 
 let co = ["#B97376", "#73A4B7", "#72B577", "#B2B270", "#746EAF"];
-canvas.width = canvas.height = 600;
+canvas.width = 600;
+canvas.height = 600;
 
 ctx.textAlign = "center";
 
 let px = 300; // Paper's Center of Mass's X Coordina
-// e
 let py = 300; // Paper's Center of Mass's Y Coordinate
 
 let dy = [0, 0, 0, 0, 0]; // Y Velocity of first paper 
@@ -163,19 +163,45 @@ function collision() {
     if (250 > x && 250 < x + w &&
         50 > y && 50 < y + h 
     ) {
-        ctx.fillStyle = "red";
+        ctx.fillStyle = "gray";
+    } else {
+        ctx.fillStyle = co[1];
     }
     
-    ctx.fillStyle = '#ecf7faff';
-    ctx.fillRect(230, 60, 50, 80);
-    ctx.fillStyle = '#72B577';
-    ctx.fillRect(230, 60, 50, 70);
+    //Enemy Type 1
+    // ctx.fillRect(230, 60, 50, 70);
 
+    // ctx.fillStyle = "#ecf7faff";
+    // ctx.beginPath();
+    // ctx.arc(245, 90, 5, 0, Math.PI * 2);
+    // ctx.arc(265, 90, 5, 0, Math.PI * 2);
+    // ctx.fill();
+
+    // ctx.fillRect(240, 110, 30, 3);
+
+    //Enemy Type 2
+    // ctx.fillRect(230, 60, 50, 70);
+
+    // ctx.fillStyle = "#ecf7faff";
+    // ctx.beginPath();
+    // ctx.arc(245, 90, 5, 0, Math.PI * 1);
+    // ctx.arc(265, 90, 5, 0, Math.PI * 1);
+    // ctx.fill();
+
+    // ctx.fillRect(245, 110, 20, 3);
+
+    //Enemy Type 3
+    ctx.beginPath();
+    ctx.arc(230, 60, 30, 0, Math.PI * 2);
+    ctx.fill();
+    
     ctx.fillStyle = "#ecf7faff";
     ctx.beginPath();
-    ctx.arc(245, 90, 5, 0, Math.PI * 2);
-    ctx.arc(265, 90, 5, 0, Math.PI * 2);
+    ctx.arc(220, 50, 5, 0, Math.PI * 2);
+    ctx.arc(240, 50, 5, 0, Math.PI * 2);
     ctx.fill();
+
+    ctx.fillRect(220, 70, 20, 2);
 }
 
 
@@ -199,24 +225,71 @@ function p(x,y,z,t) {
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(t);
+    ctx.scale(1, 1);
 
-    ctx.fillRect(-33, -35, 75, 70);
-    ctx.strokeRect(-33, -35, 75, 70);
-    ctx.strokeRect(-25, 0, 35, 25);
+    ctx.fillRect(-37, -35, 75, 70);
+    ctx.strokeRect(-37, -35, 75, 70);
+    ctx.strokeRect(-28, 0, 35, 25);
     
     ctx.fillStyle = co[z];
-    ctx.fillText("NEWS", 0, -10);
-    ctx.fillRect(-25, -8, 55, 2);
-    ctx.fillRect( -25, -0, 15, 15);
+    ctx.fillText("NEWS", -3, -10);
+    ctx.fillRect(-28, -6, 55, 2);
+    ctx.fillRect( -28, -0, 15, 15);
     
-    ctx.fillRect(15, 0, 10, 6);
-    ctx.fillRect(15, 8, 14, 6);
-    ctx.fillRect(15, 17, 17, 6);
+    ctx.fillRect(12, 0, 10, 6);
+    ctx.fillRect(12, 8, 14, 6);
+    ctx.fillRect(12, 17, 17, 6);
     
     // ctx.fillStyle="red"; //Center of rotation
     // ctx.fillRect(0, 0, 10, 10); //Center of rotation
     
     ctx.restore();
+
+    ctx.fillRect(200, 200, 10, 100);
+    ctx.fillRect(200, 200, 100, 10);
+}
+
+function bicycle(x, y) {
+    ctx.beginPath();
+    ctx.fillStyle = "#2B2F33"
+    ctx.roundRect(x - 3, y - 40, 10, 40, 10);
+    ctx.roundRect(x - 3, y + 60, 10, 40, 10);
+    ctx.fill();
+
+    ctx.fillStyle = "#42484D"
+    ctx.fillRect(x, y, 5, 30);
+    ctx.fillRect(x - 10, y + 25, 10, 5);
+    ctx.fillRect(x, y + 25, 15, 5);
+    ctx.fillStyle = "#7C8081";
+    ctx.fillRect(x - 10, y + 10, 5, 15);
+    ctx.fillRect(x + 10, y + 10, 5, 15);
+    ctx.fillStyle = "#5d5e5e";
+    ctx.fillRect(x - 10, y + 10, 15, 3);
+    ctx.fillRect(x, y + 10, 15, 3);
+
+    ctx.lineWidth = 2;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+
+    ctx.beginPath();
+    ctx.strokeStyle = "#42484";
+    // ctx.arc(x, y + 15, 20,  0, Math.PI / 4);
+    ctx.moveTo(x + 2.5, y + 30);
+    ctx.bezierCurveTo(x + 10, y - 10, x + 40, y + 20, x + 50, y + 20);
+    ctx.stroke();
+   
+    ctx.beginPath();
+    ctx.moveTo(x + 2.5, y + 30);
+    ctx.bezierCurveTo(x - 10, y - 10, x - 40, y + 20, x - 50, y + 20);
+    ctx.stroke();
+    // ctx.fill();
+
+    ctx.fillStyle = "#B5B7B9"
+    ctx.fillRect(x - 40, y + 15, 10, 5)
+    ctx.fillRect(x + 30, y + 15, 10, 5)
+
+    ctx.fillStyle = "#8FC759";
+    ctx.fillRect(x, y + 30, 5, 40);
 }
     
 let ccc = rc();
@@ -418,6 +491,7 @@ function game() {
 
     i();
     collision();
+    bicycle(Math.round(px), Math.round(py));
 
     playAnim = window.requestAnimationFrame(game);
 }
