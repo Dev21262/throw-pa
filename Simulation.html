@@ -1,0 +1,47 @@
+    ctx.beginPath();
+    ctx.fillStyle = "#2B2F33"
+    ctx.roundRect(x - 3, y - 40, 10, 40, 15);
+    ctx.roundRect(x - 3, y + 60, 10, 40, 15);
+    ctx.fill();
+
+    ctx.fillStyle = "#42484D"
+    ctx.fillRect(x, y, 5, 30);
+    ctx.fillRect(x - 10, y + 25, 10, 5);
+    ctx.fillRect(x, y + 25, 15, 5);
+    ctx.fillStyle = "#7C8081";
+    ctx.fillRect(x - 10, y + 10, 5, 15);
+    ctx.fillRect(x + 10, y + 10, 5, 15);
+    ctx.fillStyle = "#5d5e5e";
+    ctx.fillRect(x - 10, y + 10, 15, 3);
+    ctx.fillRect(x, y + 10, 15, 3);
+
+
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+    ctx.strokeStyle = "#42484";
+    // ctx.arc(x, y + 15, 20,  0, Math.PI / 4);
+    ctx.moveTo(x + 2.5, y + 30);
+    ctx.bezierCurveTo(x + 5, y - 10, x + 40, y + 20, x + 40, y + 15);
+    ctx.stroke();
+   
+    ctx.beginPath();
+    ctx.moveTo(x + 2.5, y + 30);
+    ctx.bezierCurveTo(x - 5, y - 10, x - 40, y + 20, x - 40, y + 15);
+    ctx.stroke();
+    // ctx.fill();
+
+
+
+    ctx.fillStyle = "#B5B7B9"
+    ctx.fillRect(x - 40, y + 15, 10, 5)
+    ctx.fillRect(x + 30, y + 15, 10, 5)
+
+    ctx.fillStyle = "#8FC759";
+    ctx.fillRect(x, y + 30, 5, 40);
+        
+    ctx.fillStyle = "#2A2E31";
+    ctx.beginPath();
+    ctx.moveTo(x + 30, y + 20);
+    ctx.bezierCurveTo(x + 4, y + 40, x + 3, y + 55, x + 5, y + 20);
+    ctx.fill();

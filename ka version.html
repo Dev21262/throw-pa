@@ -1,31 +1,62 @@
-const canvas = document.getElementById('c');
-const ctx = canvas.getContext("2d");
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Throw PA (Game)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,600;1,14..32,600&family=Major+Mono+Display&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap" rel="stylesheet">
+    
+    <style>
+        * { 
+            margin: 0;
+            padding: 0;
+            font-weight: 800; 
+            letter-spacing: -0.1rem; 
+            font-family: "Sen", sans-serif;
+        }
+
+        canvas {
+            width: 600px;
+            height: 600px;
+            background: #e9e9e9;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="c"></canvas>
+    <script></script>
+    <script type="module">
+    let canvas = document.querySelector("#c");
+let ctx = canvas.getContext("2d");
 
 let co = ["#B97376", "#73A4B7", "#72B577", "#B2B270", "#746EAF"];
-canvas.width =canvas.height = 600;
+canvas.width = canvas.height = 600;
 
 ctx.textAlign = "center";
 
 let px = 300; // Paper's Center of Mass's X Coordina
+// e
 let py = 300; // Paper's Center of Mass's Y Coordinate
 
+let dy = [0, 0, 0, 0, 0]; // Y Velocity of first paper 
+let dx = [0, 0, 0, 0, 0]; // X Velocity of first paper
 let rdx = 0; // Y Velocity of all other papers
 let rdy = 0; // X Velocity of all other papers
-
 let dtheta = 15 * (Math.PI / 180);  // Angular Velocity at throw of paper
 
 
 let mx = 0; //MouseX
 let my = 0; //MouseY
 
-let visualTScale = 100; // A scalar. Greater it is lesser the power of throw
+let throwScale = 100; // A scalar
 
- //Resolved Base
- // of Vector joining the paper and da the point where your mouse is at
-
-let base;
+let base; //Resolved Base of Vector
 let hypotenuse; //Actual Vector
 let perpendicular; //Resolved Height of Vector
+
+let paperIndex = 0; //Current Paper index
 
 let menuAnim;
 let playAnim;
@@ -33,14 +64,13 @@ let scoresAnim;
 
 let rc = () => Math.round(Math.random() * (co.length - 1))
 
+
 let pa = [
     {
         x: px, 
         y: py,
         z: rc(), //Determines color
-        t: 0,
-        vx: 0,
-        vy: 0,
+        t: 0
     }
 ];
 
@@ -108,107 +138,6 @@ const PLAYBTN = new Button(272, 295, 100, 30, "P L A Y", "PLAY", 2, "#444444", "
 const HOWBTN = new Button(272, 345, 90, 30, "H O W", 2, "HOW", "#444444", "#000000")
 const SCORES = new Button(240, 395, 155, 30, "S C O R E S", 2, "SCORES", "#444444", "#000000")
 
-const graphics = {
-    bicycle: function(x, y) {
-        ctx.fillStyle = "#42484D"
-        ctx.fillRect(x, y, 5, 30);
-        ctx.fillRect(x - 5, y + 25, 10, 5);
-        ctx.fillRect(x, y + 25, 10, 5);
-        ctx.fillStyle = "#7C8081";
-        ctx.fillRect(x - 6, y + 10, 5, 15);
-        ctx.fillRect(x + 6, y + 10, 5, 15);
-        ctx.fillStyle = "#5d5e5e";
-        ctx.fillRect(x - 5, y + 10, 15, 3);
-        ctx.fillRect(x, y + 10, 10, 3);
-
-
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = "#5d5e5e";
-
-        ctx.beginPath();
-        ctx.strokeStyle = "#42484";
-        // ctx.arc(x, y + 15, 20,  0, Math.PI / 4);
-        ctx.moveTo(x + 2.5, y + 30);
-        ctx.bezierCurveTo(x + 5, y - 10, x + 40, y + 20, x + 40, y + 15);
-        ctx.stroke();
-    
-        ctx.beginPath();
-        ctx.moveTo(x + 2.5, y + 30);
-        ctx.bezierCurveTo(x - 5, y - 10, x - 40, y + 20, x - 40, y + 15);
-        ctx.stroke();
-        // ctx.fill();
-
-        ctx.fillStyle = "#B5B7B9"
-        ctx.fillRect(x - 40, y + 15, 10, 5)
-        ctx.fillRect(x + 30, y + 15, 10, 5)
-
-        ctx.fillStyle = "#8FC759";
-        ctx.fillRect(x, y + 30, 5, 40);
-            
-        ctx.fillStyle = "#2A2E31";
-        ctx.beginPath();
-        ctx.moveTo(x + 2, y + 35);
-        ctx.bezierCurveTo(x + 8, y + 40, x + 20, y + 50, x + 2, y + 55);
-        ctx.fill();
-        
-        ctx.beginPath();
-        ctx.moveTo(x + 3, y + 35);
-        ctx.bezierCurveTo(x - 2, y + 38, x - 20, y + 50, x + 2, y + 55);
-        ctx.fill();
-
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-
-        ctx.beginPath();
-        ctx.moveTo(x + 20, y + 10);
-        ctx.lineTo(x + 50, y + 5);
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.moveTo(x - 20, y + 10);
-        ctx.lineTo(x - 50, y + 5);
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.fillStyle = "#2B2F33"
-        ctx.roundRect(x - 5, y - 40, 13, 40, 20);
-        ctx.roundRect(x - 5, y + 70, 13, 40, 20);
-        ctx.fill();
-    },
-
-    p: function(x,y,z,t, scale = 1) {
-        ctx.fillStyle = "#EAEDEF";
-        ctx.strokeStyle = co[z];
-
-        ctx.lineWidth = 1;
-        
-        ctx.font = "1.3rem 'Newsreader', serif";
-        ctx.save();
-        ctx.translate(x, y);
-        ctx.rotate(t);
-        ctx.scale(scale, scale);
-
-        ctx.fillRect(-37, -35, 75, 70);
-        ctx.strokeRect(-37, -35, 75, 70);
-        ctx.strokeRect(-28, 0, 35, 25);
-        
-        ctx.fillStyle = co[z];
-        ctx.fillText("NEWS", -3, -10);
-        ctx.fillRect(-28, -6, 55, 2);
-        ctx.fillRect( -28, -0, 15, 15);
-        
-        ctx.fillRect(12, 0, 10, 6);
-        ctx.fillRect(12, 8, 14, 6);
-        ctx.fillRect(12, 17, 17, 6);
-        
-        // ctx.fillStyle="red"; //Center of rotation
-        // ctx.fillRect(0, 0, 10, 10); //Center of rotation
-        
-        ctx.restore();
-
-    }
-}
-
 function quadrant(indice) {
     if (mx > pa[indice].x && my < pa[indice].y) {
         return "First";
@@ -224,20 +153,18 @@ function quadrant(indice) {
 function rotatePaper(index) {
     let q = quadrant(index);
 
-    base = (mx - pa[index].x);
+    hypotenuse = sqrt(sqr(mx - pa[index].x) +  sqr(my - pa[index].y)); 
     perpendicular = (pa[index].y - my);
-    hypotenuse = sqrt(sqr(base) +  sqr(perpendicular)); 
+    base = (mx - pa[index].x);
     
 
     let angle = Math.atan(Math.abs(perpendicular / base)); 
     //Mod of Angle from the nearest x-axis. Either +x or -x 
     // alert(Math.round(angle * 180 / Math.PI));
 
-    //Turns Math.atan 2 would have better and  much more efficient
-    //But I am not in the mood to change the code
-
     if (q === "First") {
         pa[index].t = (Math.PI / 2) - (angle);
+        
     } else if (q === "Fourth") {
         pa[index].t = (Math.PI / 2) + (angle);
 
@@ -260,44 +187,70 @@ function collision() {
         h: 90,
     }
     
+    
     // ctx.strokeRect(x, y, w, h);
     
     if (250 > x && 250 < x + w &&
         50 > y && 50 < y + h 
     ) {
-        ctx.fillStyle = "gray";
-    } else {
-        ctx.fillStyle = co[1];
+        ctx.fillStyle = "red";
     }
-
-    //Enemy Type 3
-    ctx.beginPath();
-    ctx.arc(230, 60, 30, 0, Math.PI * 2);
-    ctx.fill();
     
+    ctx.fillStyle = '#ecf7faff';
+    ctx.fillRect(230, 60, 50, 80);
+    ctx.fillStyle = '#b57572ff';
+    ctx.fillRect(230, 60, 50, 70);
+
     ctx.fillStyle = "#ecf7faff";
     ctx.beginPath();
-    ctx.arc(220, 50, 5, 0, Math.PI * 2);
-    ctx.arc(240, 50, 5, 0, Math.PI * 2);
+    ctx.arc(245, 90, 5, 0, Math.PI * 2);
+    ctx.arc(265, 90, 5, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillRect(220, 70, 20, 2);
+    ctx.fillRect(240, 110, 30, 5);
 }
 
 
-window.onmousemove = (e) => {
+c.onmousemove = (e) => {
     mx = e.clientX;
     my = e.clientY;
 
     for (let a = 0; a < pa.length; a ++) {
-        if (pa[a].vx === 0 && pa[a].vy === 0) { 
+        if (dx[a] === 0 && dy[a] === 0) { 
             rotatePaper(a);
             break;
         }   
     }
 };
 
+function p(x,y,z,t) {
+    ctx.fillStyle = "#EAEDEF";
+    ctx.strokeStyle = co[z];
+    
+    ctx.font = "1.3rem 'Newsreader', serif";
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(t);
 
+    ctx.fillRect(-37, -35, 75, 70);
+    ctx.strokeRect(-37, -35, 75, 70);
+    ctx.strokeRect(-28, 0, 35, 25);
+    
+    ctx.fillStyle = co[z];
+    ctx.fillText("NEWS", -3, -10);
+    ctx.fillRect(-28, -6, 55, 2);
+    ctx.fillRect( -28, -0, 15, 15);
+    
+    ctx.fillRect(12, 0, 10, 6);
+    ctx.fillRect(12, 8, 14, 6);
+    ctx.fillRect(12, 17, 17, 6);
+    
+    // ctx.fillStyle="red"; //Center of rotation
+    // ctx.fillRect(0, 0, 10, 10); //Center of rotation
+    
+    ctx.restore();
+}
+    
 let ccc = rc();
 let ccc2 = rc();
 let ccc3 = rc();
@@ -334,10 +287,10 @@ function menu() {
 
     // ctx.lineWidth = 1;
 
-    graphics.p(500, 400, ccc, ccc2);
-    graphics.p(500, 420, ccc2, ccc);
-    graphics.p(500, 440, ccc3, ccc2);
-    graphics.p(500, 450, ccc4, ccc3);
+    p(500, 400, ccc, ccc2);
+    p(500, 420, ccc2, ccc);
+    p(500, 440, ccc3, ccc2);
+    p(500, 450, ccc4, ccc3);
 
     ctx.strokeStyle = co[ccc2];
     ctx.beginPath();
@@ -360,41 +313,41 @@ function menu() {
     menuAnim = requestAnimationFrame(menu);
 }
 
-function hud() {
-    //Actual Papers
+function i() {
+    ctx.clearRect(0,0,600,600);
+
     for (let q = pa.length - 1; q >= 0; q--) {
-        graphics.p(pa[q].x, pa[q].y, pa[q].z, pa[q].t, 0.85);
+        p(pa[q].x, pa[q].y, pa[q].z, pa[q].t);
     }
 
-    ctx.font = `1rem 'Inter', sans-serif`;
-    ctx.fillStyle = "#474D54";
-    ctx.fillText("N E X T", canvas.width - 48, canvas.height - 90);
-    for (let q = pa.length - 2; q >= 1; q--) {
-        graphics.p(canvas.width - 50 + q * 2, canvas.height - 60 + q * 5, pa[q].z, 0, 0.7);
-    }
-    
-    //Theowing Power HUD
-    if (visualTScale > 90) {
+    // const gradient = ctx.createLinearGradient(530, 250, 540, 250 + 3 * (100 - throwScale));
+    // gradient.addColorStop(0.3, "green");
+    // gradient.addColorStop(0.5, "yellowgreen");
+    // gradient.addColorStop(0.7, "yellow");
+    // gradient.addColorStop(0.9, "orange");
+    // gradient.addColorStop(1, "red ");
+
+    if (throwScale > 90) {
         ctx.fillStyle = "#80CE77";
-    } else if (visualTScale > 80) {
+    } else if (throwScale > 80) {
         ctx.fillStyle = "#BACC76";
-    } else if (visualTScale > 60) {
+    } else if (throwScale > 60) {
         ctx.fillStyle = "#CCCC76";
-    } else if (visualTScale > 40) {
+    } else if (throwScale > 40) {
         ctx.fillStyle = "#CC9E76";
-    } else if (visualTScale > 20) {
+    } else if (throwScale > 20) {
         ctx.fillStyle = "#CC8D76";
-    } else if (visualTScale > 10) {
+    } else if (throwScale > 10) {
         ctx.fillStyle = "#CC7676";
     }
 
-    ctx.fillRect(560, 20, 10, 3 * (100 - visualTScale));
+    ctx.fillRect(560, 20, 10, 3 * (100 - throwScale));
 }
                           
 window.addEventListener("keydown", (e) => {
     if (e.key == " ") {
-        if (visualTScale > 20) {
-            visualTScale -= 5;
+        if (throwScale > 20) {
+            throwScale -= 5;
         }
     } else {
         if (e.key == "d") {
@@ -410,34 +363,27 @@ window.addEventListener("keydown", (e) => {
         }
     }
 
-    if (e.key === "c") {
-        pa = [
-            ...pa.splice(1),
-            pa[0],
-        ]
-    } else {
-        for (let a = 0; a < pa.length; a ++) {
-            if (pa[a].vx === 0 && pa[a].vy === 0) { 
-                rotatePaper(a);
-                break;
-            }   
-        }
+    for (let a = 0; a < pa.length; a ++) {
+        if (dx[a] === 0 && dy[a] === 0) { 
+            rotatePaper(a);
+            break;
+        }   
     }
 })
 
 window.addEventListener("keyup", (e) => {
     if (e.key == " ") {
-        for (let a = 0; a < pa.length; a++) {
-            if (pa[a].vx === 0 && pa[a].vy === 0) { 
-                pa[a].vx = base / visualTScale;
-                pa[a].vy = -perpendicular/ visualTScale; 
+        for (let a = 0; a < pa.length; a ++) {
+            if (dx[a] === 0 && dy[a] === 0) { 
+                dx[a] = base / throwScale;
+                dy[a] = -perpendicular/ throwScale; 
 
                 break;
             }   
         }
 
-        hud();
-        visualTScale = 100;
+        i();
+        throwScale = 100;
     } else {   
         if (e.key == "d" || e.key == "a") {
             rdx = 0;
@@ -447,27 +393,29 @@ window.addEventListener("keyup", (e) => {
             rdy = 0;
         }
     }
-
-    if (pa[0].vx === 0 && pa[0].vy === 0 && e.key !== "c") {
+    if (dx[0] === 0 && dy[0] === 0) {
         rotatePaper(0);
     }
 });
 
 function game() {
-    ctx.clearRect(0,0,600,600);
-    
     for (let a = 0; a < pa.length; a ++) {
         if (pa[a].x > 650 || pa[a].x < -50 ||
             pa[a].y > 650 || pa[a].y < -50 
         ) {
             pa.splice(a, 1);
-
+            for (let b = a; b < pa.length; b++) {
+                if (dx[b] !== 0 && dy[b] !== 0 ) {
+                    dx[b] = dx[b + 1];
+                    dy[b] = dy[b + 1];
+                } 
+            }
         }
     }
 
 
     pa.forEach((elem, index) => {
-        if (pa[index].vx == 0 && pa[index].vy == 0) {
+        if (dx[index] == 0 && dy[index] == 0) {
             elem.x += rdx;
             elem.y += rdy;
         }
@@ -477,9 +425,9 @@ function game() {
     py += rdy;
 
     for (let a = 0; a < pa.length; a++) {
-        pa[a].x += pa[a].vx;
-        pa[a].y += pa[a].vy;
-        if (pa[a].vx !== 0 && pa[a].vy !== 0) {
+        pa[a].x += dx[a];
+        pa[a].y += dy[a];
+        if (dx[a] !== 0 && dy[a] !== 0) {
             pa[a].t += dtheta;
         }
     }
@@ -491,21 +439,23 @@ function game() {
                     x, 
                     y: py,
                     z: rc(),
-                    t: Math.random() * 5 ,
-                    vx: 0,
-                    vy: 0,
+                    t: Math.random() * 5 
                 }
             );
+            console.log(px);
+            console.log(py);
         }
     }
 
 
-    graphics.bicycle(Math.round(px), Math.round(py));
-    hud();
+    i();
     collision();
 
     playAnim = window.requestAnimationFrame(game);
 }
 
-game();                                                
-// menu();
+// game();                                                
+menu();
+    </script>
+</body>
+</html>
