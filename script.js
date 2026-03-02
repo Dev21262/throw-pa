@@ -2,7 +2,7 @@ const canvas = document.getElementById('c');
 const ctx = canvas.getContext("2d");
 
 let co = ["#B97376", "#73A4B7", "#72B577", "#B2B270", "#746EAF"];
-canvas.width =canvas.height = 600;
+canvas.width = canvas.height = 600;
 
 ctx.textAlign = "center";
 
@@ -225,102 +225,48 @@ const mapEX = [0, 150, 300, 450]; //Initialy of x of elements in the map
 //There are 4 in a row
 const mapEY = [-600, -450, -300, -150, 0]; //Initial of elements in the map
 //6 exists in a column in a single frame
-let mapArr = [
-    ["tree", "tree", "road", "home"],
-    ["home", "road", "road", "home"],
-    ["home", "road", "tree", "road"],
-    ["tree", "road", "road", "home"],
-    ["home", "road", "road", "tree"],
-];
-
-const returnMapRow = () => {
-    let arr = [];
-    const lastRoadsAt = []; //Stores index of where the roads at the top
-    //are so to create the best trail
-    mapArr[0].forEach((value, index) => {
-        if (value === "road") {lastRoadsAt.push(index)};
-    });
-
-    
-    let hasPathway = false;
-    
-    for (let i = 0; i < 4; i ++) {
-        //the next row must have road in top of the roads
-        for (let value of lastRoadsAt) {
-            if (arr[value] === "road") {
-                hasPathway = true;
-            }
-        }
-
-        const indexOfLastPath = mapArr[0].lastIndexOf("road"); 
-
-        if (!hasPathway && i === indexOfLastPath) {
-            arr.push("road");
-        } else {
-            let random = Math.random();
-         
-            if (random >= 0.7) {
-                arr.push("tree")
-            }  else if (random >= 0.5 && random < 0.7) {
-                arr.push("home");
-            } else if (random < 0.5) {
-                arr.push("road");
-            }
-        }
-
-    }
-   
-    return arr;
-}
-
-
+let mapArr = {
+    street: [
+        {
+            x: 100, 
+            y: 200, 
+        },
+        {
+            x: 400, 
+            y: 300, 
+        },
+    ], 
+    home: [
+        {
+            x: 0, 
+            y: 0, 
+            type: 0,
+        },
+         {
+            x: 0, 
+            y: 150, 
+            type: 1,
+        },
+         {
+            x: 0, 
+            y: 300, 
+            type: 2,
+        },
+         {
+            x: 0, 
+            y: 450, 
+            type: 3,
+        },
+    ],
+};
 
 function map() {
-    for (let index in mapEY) {
-        mapEY[index] += 5;
-    }
+    let arr = co;
 
-    if (mapEY[mapEY.length - 1] >= 600) {
-        mapArr.pop();
-        mapEY.pop();
-
-        mapArr.unshift(returnMapRow());
-        mapEY.unshift(mapEY[0] - 150);
-    }
-
-    for (let a = 0; a < mapArr.length; a++) {
-        for (let i = 0; i < mapArr[a].length; i ++) {
-            if (mapArr[a][i] !== " ") {
-                switch (mapArr[a][i]) {
-                    case "road":
-                        ctx.fillStyle = "red";
-                        ctx.fillRect(mapEX[i], mapEY[a], 150, 150);
-                    break;
-                    
-                    case "home":
-                        ctx.fillStyle = "white";
-                        ctx.fillRect(mapEX[i], mapEY[a], 150, 150);
-                    break;
-                    
-                    case "tree":
-                        ctx.fillStyle = "green";
-                        ctx.fillRect(mapEX[i], mapEY[a], 150, 150);
-                    break;
-                }
-            }
-        }
-    }
-    //
-    //
-    //
-    //
-    // HOME 
-    // ROAD ROAD HOME
-    // ROAD HOME HOME 
-    // ROAD ROAD HOME 
-    // HOME ROAD HOME
-    // HOME ROAD HOME
-    // HOME ROAD HOME
+    mapArr.home.forEach((object) => {
+        ctx.fillStyle = arr[object.type];
+        ctx.fillRect(object.x, object.y, 150, 150);
+    });
 }
 
 function rotatePaper(index) {
@@ -469,9 +415,18 @@ function hud() {
     }
 
     ctx.font = `1rem 'Inter', sans-serif`;
-    ctx.fillStyle = "#474D54";
+    ctx.fillStyle = "#1d1f20";
+
+    let index;
+    for (let x = 0; x < pa.length; x++) {
+        if (pa[x].vx === 0 && pa[x].vy === 0) {
+            index = pa.length - 1 - x;
+            break;
+        }
+    }
+
     ctx.fillText("N E X T", canvas.width - 48, canvas.height - 90);
-    for (let q = pa.length - 2; q >= 1; q--) {
+    for (let q = index; q >= 1; q--) {
         graphics.p(canvas.width - 50 + q * 2, canvas.height - 60 + q * 5, pa[q].z, 0, 0.7);
     }
     
@@ -557,6 +512,7 @@ window.addEventListener("keyup", (e) => {
 
 function game() {
     ctx.clearRect(0,0,600,600);
+    canvas.style.background = "white";
     
     for (let a = 0; a < pa.length; a ++) {
         if (pa[a].x > 650 || pa[a].x < -50 ||
