@@ -7,7 +7,7 @@ canvas.width =canvas.height = 600;
 ctx.textAlign = "center";
 
 let px = 300; // Paper's Center of Mass's X Coordina
-let py = 300; // Paper's Center of Mass's Y Coordinate
+let py = 500; // Paper's Center of Mass's Y Coordinate
 
 let rdx = 0; // Y Velocity of all other papers
 let rdy = 0; // X Velocity of all other papers
@@ -219,6 +219,83 @@ function quadrant(indice) {
     } else if (mx < pa[indice].x && my > pa[indice].y) {
         return "Third";
     }
+}
+
+const mapEX = [0, 150, 300, 450]; //Initialy of x of elements in the map 
+//There are 4 in a row
+const mapEY = [-600, -450, -300, -150, 0]; //Initial of elements in the map
+//6 exists in a column in a single frame
+
+const returnMapRow = () => {
+    let arr = [];
+    for (let i = 0; i < 4; i ++) {
+        let random = Math.random();
+        if (random >= 0.7) {
+            arr.push("tree")
+        }  else if (random >= 0.5 && random < 0.7) {
+            arr.push("home");
+        } else if (random < 0.5) {
+            arr.push("road");
+        }
+
+    }
+    return arr;
+}
+
+let mapArr = [
+    ["tree", "tree", "road", "home"],
+    ["home", "road", "road", "home"],
+    ["home", "road", "tree", "road"],
+    ["tree", "road", "road", "home"],
+    ["home", "road", "road", "tree"],
+];
+
+function map() {
+    for (let index in mapEY) {
+        mapEY[index] += 5;
+    }
+
+    if (mapEY[mapEY.length - 1] >= 600) {
+        mapArr.pop();
+        mapEY.pop();
+
+        mapArr.unshift(returnMapRow());
+        mapEY.unshift(mapEY[0] - 150);
+    }
+
+    for (let a = 0; a < mapArr.length; a++) {
+        for (let i = 0; i < mapArr[a].length; i ++) {
+            if (mapArr[a][i] !== " ") {
+                switch (mapArr[a][i]) {
+                    case "road":
+                        ctx.fillStyle = "red";
+                        ctx.fillRect(mapEX[i], mapEY[a], 150, 150);
+                    break;
+                    
+                    case "home":
+                        ctx.fillStyle = "white";
+                        ctx.fillRect(mapEX[i], mapEY[a], 150, 150);
+                    break;
+                    
+                    case "tree":
+                        ctx.fillStyle = "green";
+                        ctx.fillRect(mapEX[i], mapEY[a], 150, 150);
+                    break;
+                }
+            }
+        }
+    }
+    //
+    //
+    //
+    //
+    // HOME 
+    // ROAD ROAD HOME
+    // ROAD HOME HOME 
+    // ROAD ROAD HOME 
+    // HOME ROAD HOME
+    // HOME ROAD HOME
+    // HOME ROAD HOME
 }
 
 function rotatePaper(index) {
@@ -499,7 +576,7 @@ function game() {
         }
     }
 
-
+    map();
     graphics.bicycle(Math.round(px), Math.round(py));
     hud();
     collision();
@@ -507,5 +584,5 @@ function game() {
     playAnim = window.requestAnimationFrame(game);
 }
 
-game();                                                
+game();   
 // menu();
