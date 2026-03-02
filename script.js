@@ -418,15 +418,21 @@ function hud() {
     ctx.fillStyle = "#1d1f20";
 
     let index;
+    // Papper 0 at bottomost
+    // Ppaer 1
+    // Ppaer 2 
+    // Paper 3 Moving
     for (let x = 0; x < pa.length; x++) {
-        if (pa[x].vx === 0 && pa[x].vy === 0) {
-            index = pa.length - 1 - x;
+        if (pa[x].vx !== 0 && pa[x].vy !== 0) {
+            index = x + 2;
+        } else {
+            index = x + 1;
             break;
         }
     }
 
     ctx.fillText("N E X T", canvas.width - 48, canvas.height - 90);
-    for (let q = index; q >= 1; q--) {
+    for (let q = pa.length - 1; q >= index; q--) {
         graphics.p(canvas.width - 50 + q * 2, canvas.height - 60 + q * 5, pa[q].z, 0, 0.7);
     }
     
