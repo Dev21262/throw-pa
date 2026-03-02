@@ -225,23 +225,6 @@ const mapEX = [0, 150, 300, 450]; //Initialy of x of elements in the map
 //There are 4 in a row
 const mapEY = [-600, -450, -300, -150, 0]; //Initial of elements in the map
 //6 exists in a column in a single frame
-
-const returnMapRow = () => {
-    let arr = [];
-    for (let i = 0; i < 4; i ++) {
-        let random = Math.random();
-        if (random >= 0.7) {
-            arr.push("tree")
-        }  else if (random >= 0.5 && random < 0.7) {
-            arr.push("home");
-        } else if (random < 0.5) {
-            arr.push("road");
-        }
-
-    }
-    return arr;
-}
-
 let mapArr = [
     ["tree", "tree", "road", "home"],
     ["home", "road", "road", "home"],
@@ -249,6 +232,48 @@ let mapArr = [
     ["tree", "road", "road", "home"],
     ["home", "road", "road", "tree"],
 ];
+
+const returnMapRow = () => {
+    let arr = [];
+    const lastRoadsAt = []; //Stores index of where the roads at the top
+    //are so to create the best trail
+    mapArr[0].forEach((value, index) => {
+        if (value === "road") {lastRoadsAt.push(index)};
+    });
+
+    
+    let hasPathway = false;
+    
+    for (let i = 0; i < 4; i ++) {
+        //the next row must have road in top of the roads
+        for (let value of lastRoadsAt) {
+            if (arr[value] === "road") {
+                hasPathway = true;
+            }
+        }
+
+        const indexOfLastPath = mapArr[0].lastIndexOf("road"); 
+
+        if (!hasPathway && i === indexOfLastPath) {
+            arr.push("road");
+        } else {
+            let random = Math.random();
+         
+            if (random >= 0.7) {
+                arr.push("tree")
+            }  else if (random >= 0.5 && random < 0.7) {
+                arr.push("home");
+            } else if (random < 0.5) {
+                arr.push("road");
+            }
+        }
+
+    }
+   
+    return arr;
+}
+
+
 
 function map() {
     for (let index in mapEY) {
