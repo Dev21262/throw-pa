@@ -225,6 +225,10 @@ const mapEX = [0, 150, 300, 450]; //Initialy of x of elements in the map
 //There are 4 in a row
 const mapEY = [-600, -450, -300, -150, 0]; //Initial of elements in the map
 //6 exists in a column in a single frame
+const camera = {
+    x: 300,
+    y: 300,
+}
 let mapArr = {
     street: [
         {
@@ -254,6 +258,26 @@ let mapArr = {
         },
          {
             x: 0, 
+            y: 450, 
+            type: 3,
+        },
+        {
+            x: 450, 
+            y: 0, 
+            type: 0,
+        },
+         {
+            x: 450, 
+            y: 150, 
+            type: 1,
+        },
+         {
+            x: 450, 
+            y: 300, 
+            type: 2,
+        },
+         {
+            x: 450, 
             y: 450, 
             type: 3,
         },
@@ -474,10 +498,7 @@ window.addEventListener("keydown", (e) => {
     }
 
     if (e.key === "c") {
-        pa = [
-            ...pa.splice(1),
-            pa[0],
-        ]
+        pa.push(pa.shift());
     } else {
         for (let a = 0; a < pa.length; a ++) {
             if (pa[a].vx === 0 && pa[a].vy === 0) { 
@@ -520,12 +541,10 @@ function game() {
     ctx.clearRect(0,0,600,600);
     canvas.style.background = "white";
     
-    for (let a = 0; a < pa.length; a ++) {
+    for (let a = pa.length - 1; a >= 0; a--) {
         if (pa[a].x > 650 || pa[a].x < -50 ||
-            pa[a].y > 650 || pa[a].y < -50 
-        ) {
+            pa[a].y > 650 || pa[a].y < -50) {
             pa.splice(a, 1);
-
         }
     }
 
