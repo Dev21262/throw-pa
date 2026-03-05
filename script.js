@@ -7,10 +7,10 @@ canvas.width = canvas.height = 600;
 ctx.textAlign = "center";
 
 let px = 300; // Paper's Center of Mass's X Coordina
-let py = 500; // Paper's Center of Mass's Y Coordinate
+let py = 300; // Paper's Center of Mass's Y Coordinate
 
-let rdx = 0; // Y Velocity of all other papers
-let rdy = 0; // X Velocity of all other papers
+let rdx = 0; // Camera's velocity in x
+let rdy = 0; // Camera's velocity in y
 
 let dtheta = 15 * (Math.PI / 180);  // Angular Velocity at throw of paper
 
@@ -226,9 +226,10 @@ const mapEX = [0, 150, 300, 450]; //Initialy of x of elements in the map
 const mapEY = [-600, -450, -300, -150, 0]; //Initial of elements in the map
 //6 exists in a column in a single frame
 const camera = {
-    x: 300,
-    y: 300,
+    x: px,
+    y: py,
 }
+
 let mapArr = {
     street: [
         {
@@ -288,8 +289,11 @@ function map() {
     let arr = co;
 
     mapArr.home.forEach((object) => {
+        ctx.save();
+        ctx.translate(-camera.x, -camera.y);
         ctx.fillStyle = arr[object.type];
         ctx.fillRect(object.x, object.y, 150, 150);
+        ctx.restore();
     });
 }
 
@@ -484,15 +488,15 @@ window.addEventListener("keydown", (e) => {
             visualTScale -= 5;
         }
     } else {
-        if (e.key == "d") {
+        if (e.key === "d") {
             rdx = 15;
-        } else if (e.key == "a") {
+        } else if (e.key === "a") {
             rdx = -15;
         }
     
-        if (e.key == "w") {
-            rdy = -15
-        } else if (e.key == "s") {
+        if (e.key === "w") {
+            rdy = -15;
+        } else if (e.key === "s") {
             rdy = 15;
         }
     }
@@ -540,7 +544,10 @@ window.addEventListener("keyup", (e) => {
 function game() {
     ctx.clearRect(0,0,600,600);
     canvas.style.background = "white";
-    
+
+    camera.x += rdx;
+    camera.y += rdy;
+
     for (let a = pa.length - 1; a >= 0; a--) {
         if (pa[a].x > 650 || pa[a].x < -50 ||
             pa[a].y > 650 || pa[a].y < -50) {
@@ -551,13 +558,13 @@ function game() {
 
     pa.forEach((elem, index) => {
         if (pa[index].vx == 0 && pa[index].vy == 0) {
-            elem.x += rdx;
-            elem.y += rdy;
+            // elem.x += rdx;
+            // elem.y += rdy;
         }
     });
 
-    px += rdx;
-    py += rdy;
+    // px += rdx;
+    // py += rdy;
 
     for (let a = 0; a < pa.length; a++) {
         pa[a].x += pa[a].vx;
