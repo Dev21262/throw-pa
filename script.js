@@ -9,9 +9,39 @@ ctx.textAlign = "center";
 let px = 300; // Paper's Center of Mass's X Coordina
 let py = 300; // Paper's Center of Mass's Y Coordinate
 
-let rdx = 0; // Camera's velocity in x
-let rdy = 0; // Camera's velocity in y
+const possibleSpeed = [-10, 0, 10];
+const controls = {
+    movement: {
+        left: {
+            key: ["a", "ArrowLeft"],
+            type: "x",
+            value: -1,
+        },
+        
+        right: {
+            key: ["d", "ArrowRight"],
+            type: "x",
+            value: 1,
+        },
 
+        down: {
+            key: ["s", "ArrowDown"],
+            type: "y",
+            value: 1,
+        },
+        
+        up: {
+            key: ["w", "ArrowUp"],
+            type: "y",
+            value: -1,
+        }
+    }
+}
+
+let ix = 1; // Camera's velocity in x
+let iy = 1; // Camera's velocity in y
+
+let cycleAngle = 0;
 let dtheta = 15 * (Math.PI / 180);  // Angular Velocity at throw of paper
 
 
@@ -109,17 +139,20 @@ const HOWBTN = new Button(272, 345, 90, 30, "H O W", 2, "HOW", "#444444", "#0000
 const SCORES = new Button(240, 395, 155, 30, "S C O R E S", 2, "SCORES", "#444444", "#000000")
 
 const graphics = {
-    bicycle: function(x, y) {
+    bicycle: function(x, y, angle) {
+        ctx.save();
+        ctx.translate(x,y);
+        ctx.rotate(angle);
         ctx.fillStyle = "#42484D"
-        ctx.fillRect(x, y, 5, 30);
-        ctx.fillRect(x - 5, y + 25, 10, 5);
-        ctx.fillRect(x, y + 25, 10, 5);
+        ctx.fillRect(0, 0, 5, 30);
+        ctx.fillRect(-5, 25, 10, 5);
+        ctx.fillRect(0, 25, 10, 5);
         ctx.fillStyle = "#7C8081";
-        ctx.fillRect(x - 6, y + 10, 5, 15);
-        ctx.fillRect(x + 6, y + 10, 5, 15);
+        ctx.fillRect(-6, 10, 5, 15);
+        ctx.fillRect(6, 10, 5, 15);
         ctx.fillStyle = "#5d5e5e";
-        ctx.fillRect(x - 5, y + 10, 15, 3);
-        ctx.fillRect(x, y + 10, 10, 3);
+        ctx.fillRect(-5, 10, 15, 3);
+        ctx.fillRect(0, 10, 10, 3);
 
 
         ctx.lineWidth = 2;
@@ -127,53 +160,54 @@ const graphics = {
 
         ctx.beginPath();
         ctx.strokeStyle = "#42484";
-        // ctx.arc(x, y + 15, 20,  0, Math.PI / 4);
-        ctx.moveTo(x + 2.5, y + 30);
-        ctx.bezierCurveTo(x + 5, y - 10, x + 40, y + 20, x + 40, y + 15);
+        // ctx.arc(x,  15, 20,  0, Math.PI / 4);
+        ctx.moveTo( 2.5,  30);
+        ctx.bezierCurveTo( 5, -10,  40,  20,  40,  15);
         ctx.stroke();
     
         ctx.beginPath();
-        ctx.moveTo(x + 2.5, y + 30);
-        ctx.bezierCurveTo(x - 5, y - 10, x - 40, y + 20, x - 40, y + 15);
+        ctx.moveTo( 2.5,  30);
+        ctx.bezierCurveTo(-5, -10, -40,  20, -40,  15);
         ctx.stroke();
         // ctx.fill();
 
         ctx.fillStyle = "#B5B7B9"
-        ctx.fillRect(x - 40, y + 15, 10, 5)
-        ctx.fillRect(x + 30, y + 15, 10, 5)
+        ctx.fillRect(-40,  15, 10, 5)
+        ctx.fillRect( 30,  15, 10, 5)
 
         ctx.fillStyle = "#8FC759";
-        ctx.fillRect(x, y + 30, 5, 40);
+        ctx.fillRect(0,  30, 5, 40);
             
         ctx.fillStyle = "#2A2E31";
         ctx.beginPath();
-        ctx.moveTo(x + 2, y + 35);
-        ctx.bezierCurveTo(x + 8, y + 40, x + 20, y + 50, x + 2, y + 55);
+        ctx.moveTo( 2,  35);
+        ctx.bezierCurveTo( 8,  40,  20,  50,  2,  55);
         ctx.fill();
         
         ctx.beginPath();
-        ctx.moveTo(x + 3, y + 35);
-        ctx.bezierCurveTo(x - 2, y + 38, x - 20, y + 50, x + 2, y + 55);
+        ctx.moveTo( 3,  35);
+        ctx.bezierCurveTo(-2,  38, -20,  50,  2,  55);
         ctx.fill();
 
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
 
         ctx.beginPath();
-        ctx.moveTo(x + 20, y + 10);
-        ctx.lineTo(x + 50, y + 5);
+        ctx.moveTo( 20,  10);
+        ctx.lineTo( 50,  5);
         ctx.stroke();
 
         ctx.beginPath();
-        ctx.moveTo(x - 20, y + 10);
-        ctx.lineTo(x - 50, y + 5);
+        ctx.moveTo(-20,  10);
+        ctx.lineTo(-50,  5);
         ctx.stroke();
 
         ctx.beginPath();
         ctx.fillStyle = "#2B2F33"
-        ctx.roundRect(x - 5, y - 40, 13, 40, 20);
-        ctx.roundRect(x - 5, y + 70, 13, 40, 20);
+        ctx.roundRect(-5, -40, 13, 40, 20);
+        ctx.roundRect(-5,  70, 13, 40, 20);
         ctx.fill();
+        ctx.restore();
     },
 
     p: function(x,y,z,t, scale = 1) {
@@ -226,8 +260,8 @@ const mapEX = [0, 150, 300, 450]; //Initialy of x of elements in the map
 const mapEY = [-600, -450, -300, -150, 0]; //Initial of elements in the map
 //6 exists in a column in a single frame
 const camera = {
-    x: px,
-    y: py,
+    x: 0,
+    y: 300,
 }
 
 let mapArr = {
@@ -280,7 +314,7 @@ let mapArr = {
          {
             x: 450, 
             y: 450, 
-            type: 3,
+            type: 4,
         },
     ],
 };
@@ -481,23 +515,55 @@ function hud() {
 
     ctx.fillRect(560, 20, 10, 3 * (100 - visualTScale));
 }
-                          
+
+const rollSpeeds = (para, x, type) => {
+    let temp;
+    if (para + x > 2) {
+        temp = 0; 
+    } else if (para + x < 0){
+        temp = 2;
+    } else {
+        temp = para + x;
+    }
+
+    if (temp !== 1) {
+        if (type === "y") {
+            ix = 1;
+            switch (temp) {
+                case 0:
+                    cycleAngle = 0;
+                break;
+                case 2:
+                    cycleAngle = Math.PI;   
+            }
+        } else if (type === "x") {
+            iy = 1;
+            switch (temp) {
+                case 0:
+                    cycleAngle = -Math.PI / 2;
+                break;
+                case 2:
+                    cycleAngle = Math.PI / 2;  
+            }
+        }
+    }
+
+    return temp
+}
+                      
 window.addEventListener("keydown", (e) => {
     if (e.key == " ") {
         if (visualTScale > 20) {
             visualTScale -= 5;
         }
     } else {
-        if (e.key === "d") {
-            rdx = 15;
-        } else if (e.key === "a") {
-            rdx = -15;
-        }
-    
-        if (e.key === "w") {
-            rdy = -15;
-        } else if (e.key === "s") {
-            rdy = 15;
+        for (let direction in controls.movement) {
+            let d = controls.movement[direction];
+            for (let v of controls.movement[direction].key) {
+                if (e.key === v) {
+                    d.type === "x" ? ix = rollSpeeds(ix, d.value, 'x') :  iy = rollSpeeds(iy, d.value, 'y')
+                }
+            }
         }
     }
 
@@ -526,15 +592,7 @@ window.addEventListener("keyup", (e) => {
 
         hud();
         visualTScale = 100;
-    } else {   
-        if (e.key == "d" || e.key == "a") {
-            rdx = 0;
-        }
-        
-        if (e.key == "w" || e.key == "s") {
-            rdy = 0;
-        }
-    }
+    } 
 
     if (pa[0].vx === 0 && pa[0].vy === 0 && e.key !== "c") {
         rotatePaper(0);
@@ -545,8 +603,8 @@ function game() {
     ctx.clearRect(0,0,600,600);
     canvas.style.background = "white";
 
-    camera.x += rdx;
-    camera.y += rdy;
+    camera.x += possibleSpeed[ix];
+    camera.y += possibleSpeed[iy];
 
     for (let a = pa.length - 1; a >= 0; a--) {
         if (pa[a].x > 650 || pa[a].x < -50 ||
@@ -590,7 +648,7 @@ function game() {
     }
 
     map();
-    graphics.bicycle(Math.round(px), Math.round(py));
+    graphics.bicycle(Math.round(px), Math.round(py), cycleAngle);
     hud();
     collision();
 
