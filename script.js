@@ -41,7 +41,7 @@ const controls = {
 let ix = 1; // Camera's velocity in x
 let iy = 1; // Camera's velocity in y
 
-let cycleAngle = 0;
+let cycleAngle = Math.PI / 2;
 let dtheta = 15 * (Math.PI / 180);  // Angular Velocity at throw of paper
 
 
@@ -291,32 +291,15 @@ let mapArr = {
             y: 300, 
             type: 2,
         },
-         {
-            x: 0, 
-            y: 450, 
-            type: 3,
-        },
+    ],
+
+    clinic: [
         {
-            x: 450, 
-            y: 0, 
-            type: 0,
-        },
-         {
-            x: 450, 
-            y: 150, 
-            type: 1,
-        },
-         {
-            x: 450, 
-            y: 300, 
-            type: 2,
-        },
-         {
-            x: 450, 
-            y: 450, 
+            x: 50, 
+            y: 400, 
             type: 4,
         },
-    ],
+    ]
 };
 
 function map() {
@@ -326,7 +309,48 @@ function map() {
         ctx.save();
         ctx.translate(-camera.x, -camera.y);
         ctx.fillStyle = arr[object.type];
-        ctx.fillRect(object.x, object.y, 150, 150);
+        ctx.fillRect(object.x, object.y, 150, 50);
+        ctx.restore();
+    });
+
+    mapArr.clinic.forEach((object) => {
+        ctx.save();
+        ctx.translate(-camera.x, -camera.y);
+        const grd = ctx.createLinearGradient(object.x, object.y, object.x + 100, object.y);
+        grd.addColorStop(0, "#e3e3e3")
+        grd.addColorStop(0.5, "#cacaca");
+        
+        const grd2 = ctx.createLinearGradient(object.x, object.y, object.x + 100, object.y);
+        grd2.addColorStop(0.5, "#acabab");
+        grd2.addColorStop(1, "#acabab");
+
+
+        ctx.fillStyle = grd;
+        ctx.fillRect(object.x, object.y, 100, 150);
+        ctx.fillStyle = grd2;
+        ctx.fillRect(object.x + 100, object.y, 100, 150);
+        
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = "#63A175";
+        ctx.beginPath();
+        ctx.arc(object.x + 100, object. y + 75, 30, Math.PI / 2, -Math.PI/2);
+        ctx.stroke();
+
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = "#9ddeb0";
+        ctx.beginPath();
+        ctx.arc(object.x + 100, object. y + 75, 30, -Math.PI / 2, Math.PI/2);
+        ctx.stroke();
+
+        ctx.fillStyle = "#63A175";
+        ctx.fillRect(object.x + 55 + 30, object.y + 70, 30, 10);
+        ctx.fillRect(object.x + 65 + 30, object.y + 60, 10, 30);
+
+        // ctx.strokeStyle = "#42b54f";
+        // ctx.strokeRect(object.x, object.y, 200, 100);
+
+        ctx.fillStyle = "rgba(10, 10, 10, 0.05)";
+        ctx.fillRect(object.x  - 5, object.y - 5, 200, 150);
         ctx.restore();
     });
 }
@@ -583,8 +607,8 @@ window.addEventListener("keyup", (e) => {
     if (e.key == " ") {
         for (let a = 0; a < pa.length; a++) {
             if (pa[a].vx === 0 && pa[a].vy === 0) { 
-                pa[a].vx = base / visualTScale;
-                pa[a].vy = -perpendicular/ visualTScale; 
+                pa[a].vx = (base / visualTScale) + possibleSpeed[ix];
+                pa[a].vy = (-perpendicular/ visualTScale) + possibleSpeed[iy]; 
 
                 break;
             }   
