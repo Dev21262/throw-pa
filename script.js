@@ -178,10 +178,10 @@ const graphics = {
         ctx.fillStyle = "#8FC759";
         ctx.fillRect(0,  30, 5, 40);
             
-        ctx.fillStyle = "#2A2E31";
+        ctx.fillStyle = "#4F5051";
         ctx.beginPath();
-        ctx.moveTo( 2,  35);
-        ctx.bezierCurveTo( 8,  40,  20,  50,  2,  55);
+        ctx.moveTo( 1,  35);
+        ctx.bezierCurveTo( 8,  40,  20,  50,  1,  55);
         ctx.fill();
         
         ctx.beginPath();
@@ -203,9 +203,9 @@ const graphics = {
         ctx.stroke();
 
         ctx.beginPath();
-        ctx.fillStyle = "#2B2F33"
-        ctx.roundRect(-5, -40, 13, 40, 20);
-        ctx.roundRect(-5,  70, 13, 40, 20);
+        ctx.fillStyle = "#4F5051"
+        ctx.roundRect(-2, -35, 9, 40, 20);
+        ctx.roundRect(-2.5,  70, 9, 40, 20);
         ctx.fill();
         ctx.restore();
     },
@@ -295,7 +295,12 @@ let mapArr = {
 
     clinic: [
         {
-            x: 50, 
+            x: 100, 
+            y: 400, 
+            type: 4,
+        },
+         {
+            x: 400, 
             y: 400, 
             type: 4,
         },
@@ -316,41 +321,53 @@ function map() {
     mapArr.clinic.forEach((object) => {
         ctx.save();
         ctx.translate(-camera.x, -camera.y);
-        const grd = ctx.createLinearGradient(object.x, object.y, object.x + 100, object.y);
-        grd.addColorStop(0, "#e3e3e3")
-        grd.addColorStop(0.5, "#cacaca");
+        // const grd = ctx.createLinearGradient(object.x, object.y, object.x + 100, object.y);
+        // grd.addColorStop(0, "#e3e3e3")
+        // grd.addColorStop(0.5, "#cacaca");
         
-        const grd2 = ctx.createLinearGradient(object.x, object.y, object.x + 100, object.y);
-        grd2.addColorStop(0.5, "#acabab");
-        grd2.addColorStop(1, "#acabab");
+        // const grd2 = ctx.createLinearGradient(object.x, object.y, object.x + 100, object.y);
+        // grd2.addColorStop(0.5, "#acabab");
+        // grd2.addColorStop(1, "#acabab");
 
 
-        ctx.fillStyle = grd;
-        ctx.fillRect(object.x, object.y, 100, 150);
-        ctx.fillStyle = grd2;
-        ctx.fillRect(object.x + 100, object.y, 100, 150);
+        ctx.lineWidth = 2;
+        ctx.fillStyle = "#454545";
+        ctx.strokeStyle = "#404040";
+        ctx.fillRect(object.x, object.y, 150, 60);
+        ctx.strokeRect(object.x, object.y, 150, 60);
+
+        ctx.fillStyle = "#FFFFFF";
+        ctx.strokeStyle = "#404040";
+        ctx.fillRect(object.x, object.y - 100, 150, 100);
+        ctx.strokeRect(object.x, object.y - 100, 150, 100);
+
+        ctx.fillStyle = "#dc4444";
+        ctx.fillRect(object.x + 10, object.y + 25, 15, 5);
+        ctx.fillRect(object.x + 15, object.y + 20, 5, 15);
+
+        ctx.fillStyle = "#d7d4d4";
+        ctx.font = "0.9rem 'Major Mono Display', monospace";
+        ctx.fillText("C l I n I c", object.x + 82, object.y + 34);
+
+        ctx.fillStyle = "#d7d4d4";
+        ctx.fillRect(object.x + 10, object.y + 45, 130, 2);
+        ctx.fillRect(object.x + 10, object.y + 10, 130, 2);
         
-        ctx.lineWidth = 4;
-        ctx.strokeStyle = "#63A175";
-        ctx.beginPath();
-        ctx.arc(object.x + 100, object. y + 75, 30, Math.PI / 2, -Math.PI/2);
-        ctx.stroke();
+        ctx.strokeRect(object.x , object.y - 15, 40, 15);
+        ctx.strokeRect(object.x + 110, object.y - 15, 40, 15);
+        ctx.strokeRect(object.x + 50, object.y - 90, 90, 15);
+        
+        ctx.fillStyle = "rgba(88, 88, 88, 0.4)";
+        ctx.fillRect(object.x, object.y - 100, 5, 100);
+        ctx.fillRect(object.x, object.y - 5, 150, 5);
+        ctx.fillRect(object.x + 50, object.y - 95, 90, 5);
+        
+        ctx.fillStyle = "#686868";
+        ctx.fillRect(object.x + 60, object.y - 90, 10, 15);
+        ctx.fillRect(object.x + 80, object.y - 90, 10, 15);
+        ctx.fillRect(object.x + 100, object.y - 90, 10, 15);
+        ctx.fillRect(object.x + 120, object.y - 90, 10, 15);
 
-        ctx.lineWidth = 4;
-        ctx.strokeStyle = "#9ddeb0";
-        ctx.beginPath();
-        ctx.arc(object.x + 100, object. y + 75, 30, -Math.PI / 2, Math.PI/2);
-        ctx.stroke();
-
-        ctx.fillStyle = "#63A175";
-        ctx.fillRect(object.x + 55 + 30, object.y + 70, 30, 10);
-        ctx.fillRect(object.x + 65 + 30, object.y + 60, 10, 30);
-
-        // ctx.strokeStyle = "#42b54f";
-        // ctx.strokeRect(object.x, object.y, 200, 100);
-
-        ctx.fillStyle = "rgba(10, 10, 10, 0.05)";
-        ctx.fillRect(object.x  - 5, object.y - 5, 200, 150);
         ctx.restore();
     });
 }
@@ -516,7 +533,7 @@ function hud() {
             break;
         }
     }
-
+    ctx.fillStyle = "#4F5051";
     ctx.fillText("N E X T", canvas.width - 48, canvas.height - 90);
     for (let q = pa.length - 1; q >= index; q--) {
         graphics.p(canvas.width - 50 + q * 2, canvas.height - 60 + q * 5, pa[q].z, 0, 0.7);
